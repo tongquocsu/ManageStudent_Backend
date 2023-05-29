@@ -27,7 +27,6 @@ const studentSchema = new Schema(
   },
   image: {
     type: String,
-    required: true
   },
   school: {
     type: mongoose.Schema.Types.ObjectId,

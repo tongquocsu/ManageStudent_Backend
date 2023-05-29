@@ -22,13 +22,14 @@ const accountSchema = new Schema(
       type: String,
       required: true,
     },
-    address: {
-      type: String,
-      required: true,
-    },
     role: {
-      type: Number,
-      default: 0,
+      type: String,
+      required: true
+    },
+    address: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Address',
+      required: true
     },
   },
   { timestamps: true }

@@ -17,6 +17,10 @@ const tuitionFeeSchema = new Schema(
         type: mongoose.Decimal128,
         required: true
     },
+    status: {
+        type: String,
+        required: true
+    },
     parents: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Parents',
