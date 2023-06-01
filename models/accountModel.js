@@ -27,8 +27,7 @@ const accountSchema = new Schema(
       required: true
     },
     address: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Address',
+      type: String,
       required: true
     },
   },
