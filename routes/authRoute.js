@@ -5,25 +5,26 @@ import {
   getAllAccountsController,
   deleteAccountController,
   updateProfileController,
+  testController,
 } from "../controllers/authController.js";
+import {
+  isAdmin,
+  isParent,
+  isStudent,
+  requireSignIn,
+} from "../middlewares/authMiddlewares.js";
 
 //router obj
 const router = express.Router();
 
 //routing
-//register
-router.post("/register", registerController);
+//Account
+router.post("/account/register", registerController);
+router.post("/account/login", loginController);
+router.get("/account/all-accounts", requireSignIn, getAllAccountsController);
+router.delete("/account/delete-account/:aid", deleteAccountController);
+router.put("/account/account-update", requireSignIn, updateProfileController);
 
-//Login
-router.post("/login", loginController);
-
-//Admin account controller
-router.get("/all-accounts", getAllAccountsController);
-
-//Delete account
-router.delete("/delete-account/:aid", deleteAccountController);
-
-//Update account
-router.put("/account/:aid", updateProfileController);
-
+//Test login role
+router.get("/account/test", requireSignIn, isParent, testController);
 export default router;

@@ -24,12 +24,12 @@ const accountSchema = new Schema(
     },
     role: {
       type: String,
-      required: true
+      default: "student",
+      enum: ["student", "parent", "admin"],
     },
     address: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Address',
-      required: true
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

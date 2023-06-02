@@ -15,9 +15,6 @@ export const registerController = async (req, res) => {
     if (!password) {
       return res.send({ error: "Password is Required" });
     }
-    if (!role) {
-      return res.send({ error: "Role is Required" });
-    }
     if (!phone) {
       return res.send({ error: "Phone no is Required" });
     }
@@ -71,15 +68,15 @@ export const loginController = async (req, res) => {
       });
     }
 
-    const user = await accountModel.findOne({ email });
-    if (!user) {
+    const account = await accountModel.findOne({ email });
+    if (!account) {
       return res.status(404).send({
         success: false,
         message: "Check your email",
       });
     }
 
-    const match = await comparePassword(password, user.password);
+    const match = await comparePassword(password, account.password);
     if (!match) {
       return res.status(200).send({
         success: false,
@@ -88,17 +85,18 @@ export const loginController = async (req, res) => {
     }
 
     //Token
-    const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
+    const token = await JWT.sign({ aid: account._id }, process.env.JWT_SECRET, {
       expiresIn: "3d",
     });
     res.status(200).send({
       success: true,
       message: "login success",
-      user: {
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        address: user.address,
+      account: {
+        name: account.name,
+        email: account.email,
+        phone: account.phone,
+        address: account.address,
+        role: account.role,
       },
       token,
     });
@@ -127,31 +125,17 @@ export const getAllAccountsController = async (req, res) => {
 };
 
 //Admin update accounts
-
 export const updateProfileController = async (req, res) => {
   try {
-    const { name, email, password, address, phone } = req.body;
-    const accountTarget = await accountModel.findById(req.params.aid);
+    const { name, password, address, phone } = req.body;
+    const accountTarget = await accountModel.findById(req.account.aid);
     //password
-    switch (true) {
-      case !name:
-        return res.status(500).send({ error: "Name is Required" });
-      case !email:
-        return res.status(500).send({ error: "Email is Required" });
-      case !password:
-        return res.status(500).send({ error: "Password is Required" });
-      case password.length < 6:
-        return res.status(500).send({ error: "Required 6 digits" });
-      case !phone:
-        return res.status(500).send({ error: "Phone is Required" });
-      case !role:
-        return res.status(500).send({ error: "role is Required" });
-      case !address:
-        return res.status(500).send({ error: "Address is Required" });
+    if (password && password.length < 6) {
+      return res.json({ error: "Password is required and 6 character long" });
     }
     const hashedPassword = password ? await hashPassword(password) : undefined;
     const updatedAccount = await accountModel.findByIdAndUpdate(
-      req.account._id,
+      req.account.aid,
       {
         name: name || accountTarget.name,
         password: hashedPassword || accountTarget.password,
@@ -169,7 +153,7 @@ export const updateProfileController = async (req, res) => {
     console.log(error);
     res.status(400).send({
       success: false,
-      message: "Error while update account",
+      message: "Error when update profile",
       error,
     });
   }
@@ -190,5 +174,15 @@ export const deleteAccountController = async (req, res) => {
       message: "Error while deleting account",
       error,
     });
+  }
+};
+
+//test controller
+export const testController = (req, res) => {
+  try {
+    res.send("Protected Routes");
+  } catch (error) {
+    console.log(error);
+    res.send({ error });
   }
 };
