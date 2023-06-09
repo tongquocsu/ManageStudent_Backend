@@ -1,14 +1,9 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
 const schoolSchema = new Schema(
   {
-    schoolID: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     name: {
       type: String,
       required: true,

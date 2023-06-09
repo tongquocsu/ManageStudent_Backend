@@ -25,7 +25,7 @@ const accountSchema = new Schema(
     role: {
       type: String,
       default: "student",
-      enum: ["student", "parent", "admin"],
+      enum: ["student", "parent", "admin", "accountant", "schoolAdmin"],
     },
     address: {
       type: String,
