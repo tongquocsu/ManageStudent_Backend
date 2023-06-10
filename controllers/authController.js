@@ -4,10 +4,10 @@ import JWT from "jsonwebtoken";
 
 export const registerController = async (req, res) => {
   try {
-    const { name, email, password, phone, address } = req.body;
+    const { username, email, password, role } = req.body;
     //validations
-    if (!name) {
-      return res.send({ error: "Name is Required" });
+    if (!username) {
+      return res.send({ error: "Username is Required" });
     }
     if (!email) {
       return res.send({ error: "Email is Required" });
@@ -15,14 +15,9 @@ export const registerController = async (req, res) => {
     if (!password) {
       return res.send({ error: "Password is Required" });
     }
-    if (!phone) {
-      return res.send({ error: "Phone no is Required" });
-    }
-    if (!address) {
-      return res.send({ error: "Address is Required" });
-    }
+
     //check user
-    const existUser = await accountModel.findOne({ email });
+    const existUser = await accountModel.findOne({ email, username });
     //exist user
     if (existUser) {
       return res.status(200).send({
@@ -34,10 +29,9 @@ export const registerController = async (req, res) => {
     const hashedPassword = await hashPassword(password);
     //save
     const user = await new accountModel({
-      name,
+      username,
       email,
-      phone,
-      address,
+      role,
       password: hashedPassword,
     }).save();
 
@@ -58,21 +52,28 @@ export const registerController = async (req, res) => {
 
 export const loginController = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, email, password } = req.body;
     //form login
-    if (!email || !password) {
+    if ((!username && !email) || !password) {
       return res.status(404).send({
         success: false,
-        message: "Check your email or password ",
+        message: "Check your username, email or password!",
       });
     }
 
-    const user = await accountModel.findOne({ email });
-    if (!user) {
-      return res.status(404).send({
-        success: false,
-        message: "Check your email",
-      });
+    // const user = await accountModel.findOne({ $or: [{ email }, { username }] });
+    // if (!user) {
+    //   return res.status(404).send({
+    //     success: false,
+    //     message: "Check your email",
+    //   });
+    // }
+
+    let user;
+    if (email) {
+      user = await accountModel.findOne({ email });
+    } else if (username) {
+      user = await accountModel.findOne({ username });
     }
 
     const match = await comparePassword(password, user.password);
@@ -91,10 +92,8 @@ export const loginController = async (req, res) => {
       success: true,
       message: "login success",
       user: {
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        address: user.address,
+        username: username ? user.username : undefined,
+        email: email ? user.email : undefined,
       },
       token,
     });
