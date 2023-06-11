@@ -1,14 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
 const scheduleSchema = new Schema(
     {
-    scheduleID: {
-        type: Number,
-        required: true,
-        unique: true
-    },
     semester: {
         type: String,
         required: true

@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const accountSchema = new Schema(
   {
-    name: {
+    username: {
       type: String,
       required: true,
       trim: true,
@@ -18,17 +18,10 @@ const accountSchema = new Schema(
       type: String,
       required: true,
     },
-    phone: {
-      type: String,
-      required: true,
-    },
     role: {
       type: String,
-      required: true
-    },
-    address: {
-      type: String,
-      required: true
+      default: "student",
+      enum: ["student", "parent", "admin", "accountant", "schoolAdmin"],
     },
   },
   { timestamps: true }

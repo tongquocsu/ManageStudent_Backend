@@ -1,14 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
 const schoolAdministrationStaffSchema = new mongoose.Schema(
     {
-    staffID: {
-        type: Number,
-        required: true,
-        unique: true
-    },
     name: {
         type: String,
         required: true
@@ -21,7 +16,7 @@ const schoolAdministrationStaffSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Schedule'
     },
-    class: {
+    klass: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Class'
     }
