@@ -6,28 +6,24 @@ const studentSchema = new Schema(
   {
     person: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Person',
-      required: true
+      ref: "Person",
+      required: true,
     },
     dateOfBirth: {
       type: Date,
-      required: true
+      required: true,
     },
     gender: {
       type: Boolean,
-      required: true
+      required: true,
     },
     klass: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Class',
-      required: true
-    },
-    role: {
-      type: String,
-      default: "student",
+      ref: "Class",
+      required: true,
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.model('Student', studentSchema);
+export default mongoose.model("Student", studentSchema);

@@ -2,15 +2,15 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const academicYearSchema = new Schema({
+const academicYearSchema = new Schema(
+  {
     year: {
-        type: Date,
-        required: true,
-        unique: true
-    }
+      type: Date,
+      required: true,
+      unique: true,
     },
-    { timestamps: true}
+  },
+  { timestamps: true }
 );
 
-export default mongoose.model('AcademicYear', academicYearSchema);
-
+export default mongoose.model("AcademicYear", academicYearSchema);

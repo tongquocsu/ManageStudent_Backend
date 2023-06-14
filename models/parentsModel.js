@@ -6,17 +6,15 @@ const parentsSchema = new Schema(
   {
     person: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Person',
-      required: true
+      ref: "Person",
+      required: true,
     },
     tuitionFee: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'TuitionFee',
-      required: true
+      ref: "TuitionFee",
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.model('Parents', parentsSchema);
-
+export default mongoose.model("Parents", parentsSchema);
