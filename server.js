@@ -6,6 +6,8 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoute.js";
 import schoolRoutes from "./routes/schoolRoute.js";
 import classRoutes from "./routes/classRoute.js";
+import studentRoutes from "./routes/studentRoute.js";
+import parentRoutes from "./routes/parentRoute.js";
 
 //configure env
 dotenv.config();
@@ -24,6 +26,8 @@ app.use(morgan("dev"));
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/school", schoolRoutes);
 app.use("/api/v1/class", classRoutes);
+app.use("/api/v1/student", studentRoutes);
+app.use("/api/v1/parent", parentRoutes);
 
 //rest api
 app.get("/", (req, res) => {

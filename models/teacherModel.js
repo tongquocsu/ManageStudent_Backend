@@ -1,46 +1,20 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
 const teacherSchema = new Schema(
   {
-    teacherID: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    mobileNumber: {
-      type: String,
-      required: true,
-    },
-    image: {
-      type: String,
-      required: true,
-    },
-    school: {
+    person: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "School",
-      required: true,
+      ref: 'Person',
+      required: true
     },
-    address: {
+    role: {
       type: String,
-      required: true,
-    },
-    account: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Account",
-      required: true,
+      default: "teacher",
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Teacher", teacherSchema);
+export default mongoose.model('Teacher', teacherSchema);

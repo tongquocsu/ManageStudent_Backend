@@ -1,20 +1,12 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
 const studentSchema = new Schema(
   {
-    studentID: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    mobileNumber: {
-      type: String,
+    person: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Person",
       required: true,
     },
     dateOfBirth: {
@@ -25,26 +17,9 @@ const studentSchema = new Schema(
       type: Boolean,
       required: true,
     },
-    image: {
-      type: String,
-    },
-    school: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "School",
-      required: true,
-    },
-    address: {
-      type: String,
-      required: true,
-    },
-    class: {
+    klass: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Class",
-      required: true,
-    },
-    account: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Account",
       required: true,
     },
   },
