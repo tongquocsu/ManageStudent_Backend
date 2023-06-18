@@ -13,15 +13,15 @@ const tuitionFeeSchema = new Schema(
         required: true
     },
     status: {
-        type: String,
+        type: Boolean,
         required: true
     },
-    parents: {
+    parentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Parents',
         required: true
     },
-    accountant: {
+    accountantId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Accountant',
         required: true
@@ -30,4 +30,5 @@ const tuitionFeeSchema = new Schema(
     { timestamps: true}
 );
 
-export default mongoose.model('TuitionFee', tuitionFeeSchema);
+const TuitionFee = mongoose.model('TuitionFee', tuitionFeeSchema);
+export default TuitionFee

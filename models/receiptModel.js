@@ -12,12 +12,12 @@ const receiptSchema = new Schema(
         type: mongoose.Decimal128,
         required: true
     },
-    parents: {
+    parentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Parents',
         required: true
     },
-    tuitionFee: {
+    tuitionFeeId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TuitionFee',
         required: true
@@ -26,4 +26,5 @@ const receiptSchema = new Schema(
     { timestamps: true}
 );
 
-export default mongoose.model('Receipt', receiptSchema);
+const Receipt = mongoose.model('Receipt', receiptSchema);
+export default Receipt

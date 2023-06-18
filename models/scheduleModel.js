@@ -14,24 +14,25 @@ const scheduleSchema = new Schema(
     },
     time: {
         type: Date,
-        required: true
+        required: true,
+        default: Date.now,
     },
-    classroom: {
+    classroomId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Classroom',
         required: true
     },
-    subject: {
+    subjectId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Subject',
         required: true
     },
-    teacher: {
+    teacherId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Teacher',
         required: true
     },
-    academicYear: {
+    academicYearId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AcademicYear',
         required: true
@@ -40,5 +41,5 @@ const scheduleSchema = new Schema(
     { timestamps: true}
 );
 
-export default mongoose.model('Schedule', scheduleSchema);
-
+const Schedule = mongoose.model('Schedule', scheduleSchema);
+export default Schedule;
