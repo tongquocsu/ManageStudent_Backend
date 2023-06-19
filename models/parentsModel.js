@@ -13,6 +13,10 @@ const parentsSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "TuitionFee",
     },
+    studentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Student",
+    },
   },
   { timestamps: true }
 );

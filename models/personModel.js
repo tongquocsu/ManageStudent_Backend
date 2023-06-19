@@ -6,31 +6,39 @@ const personSchema = new Schema(
   {
     name: {
       type: String,
-      required: true
+      required: true,
+    },
+    dateOfBirth: {
+      type: Date,
+      required: true,
+    },
+    gender: {
+      type: Boolean,
+      required: true,
     },
     mobileNumber: {
       type: String,
-      required: true
+      required: true,
     },
     image: {
-      type: String
+      type: String,
     },
     school: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'School',
-      required: true
+      ref: "School",
+      required: true,
     },
     address: {
       type: String,
-      required: true
+      required: true,
     },
     account: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Account',
-      required: true
-    }
+      ref: "Account",
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-export default mongoose.model('Person', personSchema);
+export default mongoose.model("Person", personSchema);
