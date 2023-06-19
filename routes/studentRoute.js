@@ -6,7 +6,8 @@ import {
   getStudentInfoController,
   updateStudentController,
 } from "../controllers/studentController.js";
-import { isAdmin, requireSignIn } from "../middlewares/authMiddlewares.js";
+import { isStudent, requireSignIn } from "../middlewares/authMiddlewares.js";
+import { testController } from "../controllers/authController.js";
 
 //router obj
 const router = express.Router();
@@ -14,14 +15,12 @@ const router = express.Router();
 //routing
 //Account
 router.post("/create", createStudentAccountController);
-router.get("/list", requireSignIn, isAdmin, getAllStudentsController);
+router.get("/list", getAllStudentsController);
 router.delete("/delete/:sid", deleteStudentController);
 router.put("/update/:sid", updateStudentController);
 router.get("/detail/:sid", getStudentInfoController);
-// router.post("/school-create", requireSignIn, isAdmin, createSchool);
-// router.put("/school-update/:sid", requireSignIn, isAdmin, updateSchool);
-// router.delete("/school-delete/:sid", requireSignIn, isAdmin, deleteSchool);
-// router.get("/school-list", requireSignIn, isAdmin, listSchoolsController);
-// router.get("/school-detail/:sid", requireSignIn, isAdmin, getSchoolController);
+
+//test
+router.get("/account/test", requireSignIn, isStudent, testController);
 
 export default router;

@@ -2,14 +2,14 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const receiptSchema = new Schema(
+const studentRecordsSchema = new Schema(
   {
-    paymentDate: {
-      type: Date,
+    information: {
+      type: String,
       required: true,
     },
-    totalSum: {
-      type: mongoose.Decimal128,
+    image: {
+      type: String,
       required: true,
     },
     parentId: {
@@ -17,13 +17,17 @@ const receiptSchema = new Schema(
       ref: "Parents",
       required: true,
     },
-    tuitionFeeId: {
+    feeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "TuitionFee",
+      required: true,
+    },
+    processStudying: {
+      type: String,
       required: true,
     },
   },
   { timestamps: true }
 );
-
-export default mongoose.model("Receipt", receiptSchema);
+const StudentRecords = mongoose.model("StudentRecords", studentRecordsSchema);
+export default StudentRecords;

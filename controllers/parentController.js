@@ -1,7 +1,8 @@
+import mongoose from "mongoose";
 import parentsModel from "../models/parentsModel.js";
 import personModel from "../models/personModel.js";
 import accountModel from "../models/accountModel.js";
-import { hashPassword } from "../helpers/authHelpers.js";
+import { hashPassword, validateInputs } from "../helpers/authHelpers.js";
 
 export const createParentController = async (req, res) => {
   try {
@@ -17,17 +18,16 @@ export const createParentController = async (req, res) => {
       password,
     } = req.body;
 
-    //check email exist
-    const existUser = await accountModel.findOne({ email });
-    //exist user
-    if (existUser) {
-      return res.status(200).send({
-        success: true,
-        message: "Email has been taken",
+    //Kiểm tra tính duy nhất của username, email. Kiểm tra cú pháp của email, username, password
+    const validation = await validateInputs(username, email, password);
+    if (!validation.success) {
+      return res.status(400).send({
+        success: false,
+        message: validation.message,
       });
     }
 
-    //Mã hóa mật khẩu
+    // Mã hóa mật khẩu
     const hashedPassword = await hashPassword(password);
 
     // Tạo một tài khoản mới cho sinh viên
@@ -37,9 +37,6 @@ export const createParentController = async (req, res) => {
       password: hashedPassword,
       role: "parent",
     });
-
-    // Lưu tài khoản
-    await account.save();
 
     // Tạo một người (person) mới
     const person = new personModel({
@@ -51,24 +48,37 @@ export const createParentController = async (req, res) => {
       account: account._id,
     });
 
-    // Lưu người (person)
-    await person.save();
-
-    // Tạo một phụ huynh mới
+    // Tạo một học sinh mới
     const parent = new parentsModel({
       person: person._id,
     });
 
-    // Lưu phụ huynh
-    await parent.save();
+    // Mở một session để bắt đầu giao dịch trong MongoDB
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    res.status(201).send({
-      success: true,
-      message: "Parent account created successfully",
-      parent,
-      person,
-      account,
-    });
+    try {
+      // Lưu tài khoản, người và học sinh trong một giao dịch
+      await account.save({ session });
+      await person.save({ session });
+      await parent.save({ session });
+
+      // Commit giao dịch nếu không có lỗi
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(201).send({
+        success: true,
+        message: "Parent account created successfully",
+        parent,
+        person,
+        account,
+      });
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      throw error;
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -103,7 +113,7 @@ export const deleteParentController = async (req, res) => {
   try {
     const parentId = req.params.pid;
 
-    // Xóa phụ huynh dựa trên parentId
+    // Xóa học sinh dựa trên studentId
     const parent = await parentsModel.findById(parentId);
     const person = await personModel.findById(parent.person);
 
@@ -114,10 +124,11 @@ export const deleteParentController = async (req, res) => {
       });
     }
 
-    // Xóa thông tin liên quan đến phụ huynh
+    // Xóa thông tin liên quan đến học sinh
     await personModel.findByIdAndDelete(parent.person);
+    await accountModel.findByIdAndDelete(person.account);
 
-    // Xóa phụ huynh
+    // Xóa học sinh
     await parentsModel.findByIdAndDelete(parentId);
 
     res.status(200).send({
@@ -137,10 +148,34 @@ export const deleteParentController = async (req, res) => {
 export const updateParentController = async (req, res) => {
   try {
     const parentId = req.params.pid;
-    const { name, mobileNumber, image, address, tuitionFee } = req.body;
+
+    const parent = await parentsModel.findById(parentId);
+    const person = await personModel.findById(parent.person);
+
+    const {
+      username,
+      email,
+      password,
+      name,
+      mobileNumber,
+      image,
+      address,
+      tuitionFee,
+    } = req.body;
+
+    //Kiểm tra tính duy nhất của username, email. Kiểm tra cú pháp của email, username, password
+    const validation = await validateInputs(username, email, password);
+    if (!validation.success) {
+      return res.status(400).send({
+        success: false,
+        message: validation.message,
+      });
+    }
+
+    // Mã hóa mật khẩu
+    const hashedPassword = await hashPassword(password);
 
     // Kiểm tra phụ huynh có tồn tại hay không
-    const parent = await parentsModel.findById(parentId);
     if (!parent) {
       return res.status(404).send({
         success: false,
@@ -162,6 +197,15 @@ export const updateParentController = async (req, res) => {
         mobileNumber,
         image,
         address,
+      },
+    });
+
+    //Cập nhật tài khoản phụ huynh
+    await accountModel.findByIdAndUpdate(person.account, {
+      $set: {
+        username,
+        email,
+        password: hashedPassword,
       },
     });
 

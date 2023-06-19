@@ -8,6 +8,9 @@ import schoolRoutes from "./routes/schoolRoute.js";
 import classRoutes from "./routes/classRoute.js";
 import studentRoutes from "./routes/studentRoute.js";
 import parentRoutes from "./routes/parentRoute.js";
+import adminRoutes from "./routes/adminRoute.js";
+import accountantRoutes from "./routes/accountantRoute.js";
+import teacherRoutes from "./routes/teacherRoute.js";
 
 //configure env
 dotenv.config();
@@ -28,6 +31,9 @@ app.use("/api/v1/school", schoolRoutes);
 app.use("/api/v1/class", classRoutes);
 app.use("/api/v1/student", studentRoutes);
 app.use("/api/v1/parent", parentRoutes);
+app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/accountant", accountantRoutes);
+app.use("/api/v1/teacher", teacherRoutes);
 
 //rest api
 app.get("/", (req, res) => {

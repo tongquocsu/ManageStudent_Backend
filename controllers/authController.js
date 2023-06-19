@@ -59,20 +59,27 @@ export const registerController = async (req, res) => {
 
 export const loginController = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    //form login
-    if (!email || !password) {
+    const { emailOrUsername, password } = req.body;
+
+    if (!emailOrUsername || !password) {
       return res.status(404).send({
         success: false,
-        message: "Check your email or password ",
+        message: "Check your email/username or password",
       });
     }
 
-    const account = await accountModel.findOne({ email });
+    // Kiểm tra xem emailOrUsername là email hay username
+    const isEmail = /\S+@\S+\.\S+/.test(emailOrUsername);
+
+    // Tìm tài khoản dựa trên email hoặc username
+    const account = await accountModel.findOne({
+      $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
+    });
+
     if (!account) {
       return res.status(404).send({
         success: false,
-        message: "Check your email",
+        message: "Check your email/username",
       });
     }
 
@@ -85,15 +92,20 @@ export const loginController = async (req, res) => {
     }
 
     //Token
-    const token = await JWT.sign({ aid: account._id }, process.env.JWT_SECRET, {
-      expiresIn: "3d",
-    });
+    const token = await JWT.sign(
+      { accountId: account._id },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "3d",
+      }
+    );
 
     res.status(200).send({
       success: true,
-      message: "login success",
+      message: "Login success",
       account: {
         email: account.email,
+        username: account.username,
         role: account.role,
       },
       token,
@@ -102,7 +114,7 @@ export const loginController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Error when login",
+      message: "Error when logging in",
       error,
     });
   }
@@ -126,14 +138,14 @@ export const getAllAccountsController = async (req, res) => {
 export const updateProfileController = async (req, res) => {
   try {
     const { name, password, address, phone } = req.body;
-    const accountTarget = await accountModel.findById(req.account.aid);
+    const accountTarget = await accountModel.findById(req.account.accountId);
     //password
     if (password && password.length < 6) {
       return res.json({ error: "Password is required and 6 character long" });
     }
     const hashedPassword = password ? await hashPassword(password) : undefined;
     const updatedAccount = await accountModel.findByIdAndUpdate(
-      req.account.aid,
+      req.account.accountId,
       {
         name: name || accountTarget.name,
         password: hashedPassword || accountTarget.password,
@@ -159,7 +171,7 @@ export const updateProfileController = async (req, res) => {
 
 export const deleteAccountController = async (req, res) => {
   try {
-    await accountModel.findByIdAndDelete(req.params.aid);
+    await accountModel.findByIdAndDelete(req.params.accountId);
 
     res.status(200).send({
       success: true,

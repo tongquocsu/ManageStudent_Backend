@@ -6,15 +6,19 @@ const teacherSchema = new Schema(
   {
     person: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Person',
-      required: true
+      ref: "Person",
+      required: true,
     },
-    role: {
-      type: String,
-      default: "teacher",
+    dateOfBirth: {
+      type: Date,
+      required: true,
+    },
+    gender: {
+      type: Boolean,
+      required: true,
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.model('Teacher', teacherSchema);
+export default mongoose.model("Teacher", teacherSchema);

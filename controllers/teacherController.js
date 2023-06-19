@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import studentModel from "../models/studentModel.js";
+import teacherModel from "../models/teacherModel.js";
 import accountModel from "../models/accountModel.js";
 import personModel from "../models/personModel.js";
 import { hashPassword, validateInputs } from "../helpers/authHelpers.js";
 
-export const createStudentAccountController = async (req, res) => {
+export const createTeacherAccountController = async (req, res) => {
   try {
     // Lấy thông tin từ body request
     const {
@@ -13,6 +13,8 @@ export const createStudentAccountController = async (req, res) => {
       image,
       school,
       address,
+      dateOfBirth,
+      gender,
       username,
       email,
       password,
@@ -30,12 +32,12 @@ export const createStudentAccountController = async (req, res) => {
     // Mã hóa mật khẩu
     const hashedPassword = await hashPassword(password);
 
-    // Tạo một tài khoản mới cho sinh viên
+    // Tạo một tài khoản mới cho giáo viên
     const account = new accountModel({
       username,
       email,
       password: hashedPassword,
-      role: "student",
+      role: "teacher",
     });
 
     // Tạo một người (person) mới
@@ -48,12 +50,11 @@ export const createStudentAccountController = async (req, res) => {
       account: account._id,
     });
 
-    // Tạo một học sinh mới
-    const student = new studentModel({
+    // Tạo một giáo viên mới
+    const teacher = new teacherModel({
       person: person._id,
-      dateOfBirth: req.body.dateOfBirth,
-      gender: req.body.gender,
-      klass: req.body.klass,
+      dateOfBirth,
+      gender,
     });
 
     // Mở một session để bắt đầu giao dịch trong MongoDB
@@ -61,10 +62,10 @@ export const createStudentAccountController = async (req, res) => {
     session.startTransaction();
 
     try {
-      // Lưu tài khoản, người và học sinh trong một giao dịch
+      // Lưu tài khoản, người và giáo viên trong một giao dịch
       await account.save({ session });
       await person.save({ session });
-      await student.save({ session });
+      await teacher.save({ session });
 
       // Commit giao dịch nếu không có lỗi
       await session.commitTransaction();
@@ -72,8 +73,8 @@ export const createStudentAccountController = async (req, res) => {
 
       res.status(201).send({
         success: true,
-        message: "Student account created successfully",
-        student,
+        message: "Teacher account created successfully",
+        teacher,
         person,
         account,
       });
@@ -89,73 +90,73 @@ export const createStudentAccountController = async (req, res) => {
     res.status(500).send({
       success: false,
       error,
-      message: "Error creating student account",
+      message: "Error creating teacher account",
     });
   }
 };
 
-export const getAllStudentsController = async (req, res) => {
+export const getAllTeachersController = async (req, res) => {
   try {
-    // Lấy tất cả học sinh từ database
-    const students = await studentModel.find().populate("person");
+    // Lấy tất cả giáo viên từ database
+    const teachers = await teacherModel.find().populate("person");
 
     res.status(200).send({
       success: true,
-      message: "Get students list",
-      students,
+      message: "Get teachers list",
+      teachers,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
       error,
-      message: "Error retrieving students",
+      message: "Error retrieving teachers",
     });
   }
 };
 
-export const deleteStudentController = async (req, res) => {
+export const deleteTeacherController = async (req, res) => {
   try {
-    const studentId = req.params.sid;
+    const teacherId = req.params.tid;
 
-    // Xóa học sinh dựa trên studentId
-    const student = await studentModel.findById(studentId);
-    const person = await personModel.findById(student.person);
+    // Xóa giáo viên dựa trên teacherId
+    const teacher = await teacherModel.findById(teacherId);
+    const person = await personModel.findById(teacher.person);
 
-    if (!student) {
+    if (!teacher) {
       return res.status(404).send({
         success: false,
-        message: "Student not found",
+        message: "Teacher not found",
       });
     }
 
-    // Xóa thông tin liên quan đến học sinh
-    await personModel.findByIdAndDelete(student.person);
+    // Xóa thông tin liên quan đến giáo viên
+    await personModel.findByIdAndDelete(teacher.person);
     await accountModel.findByIdAndDelete(person.account);
 
-    // Xóa học sinh
-    await studentModel.findByIdAndDelete(studentId);
+    // Xóa giáo viên
+    await teacherModel.findByIdAndDelete(teacherId);
 
     res.status(200).send({
       success: true,
-      message: "Student deleted successfully",
+      message: "Teacher deleted successfully",
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
       error,
-      message: "Error deleting student",
+      message: "Error deleting teacher",
     });
   }
 };
 
-export const updateStudentController = async (req, res) => {
+export const updateTeacherController = async (req, res) => {
   try {
-    const studentId = req.params.sid;
+    const teacherId = req.params.tid;
 
-    const student = await studentModel.findById(studentId);
-    const person = await personModel.findById(student.person);
+    const teacher = await teacherModel.findById(teacherId);
+    const person = await personModel.findById(teacher.person);
 
     const {
       username,
@@ -164,11 +165,8 @@ export const updateStudentController = async (req, res) => {
       name,
       mobileNumber,
       image,
-      school,
-      address,
       dateOfBirth,
       gender,
-      klass,
     } = req.body;
 
     //Kiểm tra tính duy nhất của username, email. Kiểm tra cú pháp của email, username, password
@@ -183,35 +181,32 @@ export const updateStudentController = async (req, res) => {
     // Mã hóa mật khẩu
     const hashedPassword = await hashPassword(password);
 
-    // Kiểm tra học sinh có tồn tại hay không
-    if (!student) {
+    // Kiểm tra giáo viên có tồn tại hay không
+    if (!teacher) {
       return res.status(404).send({
         success: false,
-        message: "Student not found",
+        message: "Teacher not found",
       });
     }
 
-    // Cập nhật thông tin học sinh
-    await studentModel.findByIdAndUpdate(studentId, {
+    // Cập nhật thông tin giáo viên
+    await teacherModel.findByIdAndUpdate(teacherId, {
       $set: {
         dateOfBirth,
         gender,
-        klass,
       },
     });
 
     // Cập nhật thông tin người (person)
-    await personModel.findByIdAndUpdate(student.person, {
+    await personModel.findByIdAndUpdate(teacher.person, {
       $set: {
         name,
         mobileNumber,
         image,
-        school,
-        address,
       },
     });
 
-    //Cập nhật tài khoản học sinh
+    //Cập nhật tài khoản giáo viên
     await accountModel.findByIdAndUpdate(person.account, {
       $set: {
         username,
@@ -220,50 +215,50 @@ export const updateStudentController = async (req, res) => {
       },
     });
 
-    // Lấy thông tin học sinh đã cập nhật
-    const updatedStudent = await studentModel
-      .findById(studentId)
+    // Lấy thông tin giáo viên đã cập nhật
+    const updatedTeacher = await teacherModel
+      .findById(teacherId)
       .populate("person");
 
     res.status(200).send({
       success: true,
-      message: "Student information updated successfully",
-      student: updatedStudent,
+      message: "Teacher information updated successfully",
+      teacher: updatedTeacher,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
       error,
-      message: "Error updating student information",
+      message: "Error updating teacher information",
     });
   }
 };
 
-export const getStudentInfoController = async (req, res) => {
+export const getTeacherInfoController = async (req, res) => {
   try {
-    const studentId = req.params.sid;
+    const teacherId = req.params.tid;
 
-    // Kiểm tra học sinh có tồn tại hay không
-    const student = await studentModel.findById(studentId).populate("person");
-    if (!student) {
+    // Kiểm tra giáo viên có tồn tại hay không
+    const teacher = await teacherModel.findById(teacherId).populate("person");
+    if (!teacher) {
       return res.status(404).send({
         success: false,
-        message: "Student not found",
+        message: "Teacher not found",
       });
     }
 
     res.status(200).send({
       success: true,
-      message: "Get student information",
-      student,
+      message: "Get teacher information",
+      teacher,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
       error,
-      message: "Error retrieving student information",
+      message: "Error retrieving teacher information",
     });
   }
 };

@@ -8,6 +8,7 @@ import {
   testController,
 } from "../controllers/authController.js";
 import {
+  isAccountant,
   isAdmin,
   isParent,
   isStudent,
@@ -31,6 +32,6 @@ router.delete("/account/delete-account/:aid", deleteAccountController);
 router.put("/account/account-update", requireSignIn, updateProfileController);
 
 //Test login role
-router.get("/account/test", requireSignIn, isParent, testController);
+router.get("/account/test", requireSignIn, isAccountant, testController);
 
 export default router;

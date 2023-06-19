@@ -6,8 +6,8 @@ import {
   deleteParentController,
   getAllParentsController,
   getParentInfoController,
+  updateParentController,
 } from "../controllers/parentController.js";
-import { updateStudentController } from "../controllers/studentController.js";
 
 //router obj
 const router = express.Router();
@@ -15,9 +15,9 @@ const router = express.Router();
 //routing
 //Account
 router.post("/create", createParentController);
-router.get("/list", requireSignIn, isAdmin, getAllParentsController);
-router.delete("/delete/:sid", deleteParentController);
-router.put("/update/:sid", updateStudentController);
-router.get("/detail/:sid", getParentInfoController);
+router.get("/list", getAllParentsController);
+router.delete("/delete/:pid", deleteParentController);
+router.put("/update/:pid", updateParentController);
+router.get("/detail/:pid", getParentInfoController);
 
 export default router;
