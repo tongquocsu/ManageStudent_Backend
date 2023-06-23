@@ -41,6 +41,8 @@ export const createStudentAccountController = async (req, res) => {
     // Tạo một người (person) mới
     const person = new personModel({
       name,
+      dateOfBirth: req.body.dateOfBirth,
+      gender: req.body.gender,
       mobileNumber,
       image,
       school,
@@ -51,8 +53,6 @@ export const createStudentAccountController = async (req, res) => {
     // Tạo một học sinh mới
     const student = new studentModel({
       person: person._id,
-      dateOfBirth: req.body.dateOfBirth,
-      gender: req.body.gender,
       klass: req.body.klass,
     });
 
@@ -153,9 +153,10 @@ export const deleteStudentController = async (req, res) => {
 export const updateStudentController = async (req, res) => {
   try {
     const studentId = req.params.sid;
-
     const student = await studentModel.findById(studentId);
     const person = await personModel.findById(student.person);
+    const currentEmail = person.account.email;
+    const currentUsername = person.account.username;
 
     const {
       username,
@@ -172,7 +173,15 @@ export const updateStudentController = async (req, res) => {
     } = req.body;
 
     //Kiểm tra tính duy nhất của username, email. Kiểm tra cú pháp của email, username, password
-    const validation = await validateInputs(username, email, password);
+    const validation = await validateInputs(
+      username,
+      email,
+      password,
+      currentEmail,
+      currentUsername,
+      person.account._id
+    );
+
     if (!validation.success) {
       return res.status(400).send({
         success: false,
@@ -194,8 +203,6 @@ export const updateStudentController = async (req, res) => {
     // Cập nhật thông tin học sinh
     await studentModel.findByIdAndUpdate(studentId, {
       $set: {
-        dateOfBirth,
-        gender,
         klass,
       },
     });
@@ -206,6 +213,8 @@ export const updateStudentController = async (req, res) => {
         name,
         mobileNumber,
         image,
+        dateOfBirth,
+        gender,
         school,
         address,
       },

@@ -138,10 +138,20 @@ export const updateAdminController = async (req, res) => {
 
     const admin = await adminModel.findById(adminId);
 
+    const currentEmail = admin.account.email;
+    const currentUsername = admin.account.username;
     const { name, username, email, password } = req.body;
 
     //Kiểm tra tính duy nhất của username, email. Kiểm tra cú pháp của email, username, password
-    const validation = await validateInputs(username, email, password);
+    const validation = await validateInputs(
+      username,
+      email,
+      password,
+      currentEmail,
+      currentUsername,
+      admin.account._id
+    );
+
     if (!validation.success) {
       return res.status(400).send({
         success: false,

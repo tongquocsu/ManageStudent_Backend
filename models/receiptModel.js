@@ -3,27 +3,28 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const receiptSchema = new Schema(
-  {
+    {
     paymentDate: {
-      type: Date,
-      required: true,
+        type: Date,
+        required: true
     },
     totalSum: {
-      type: mongoose.Decimal128,
-      required: true,
+        type: mongoose.Decimal128,
+        required: true
     },
     parentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Parents",
-      required: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Parents',
+        required: true
     },
     tuitionFeeId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "TuitionFee",
-      required: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'TuitionFee',
+        required: true
+    }
     },
-  },
-  { timestamps: true }
+    { timestamps: true}
 );
 
-export default mongoose.model("Receipt", receiptSchema);
+const Receipt = mongoose.model('Receipt', receiptSchema);
+export default Receipt

@@ -8,6 +8,10 @@ const schoolAdministrationStaffSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    account: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Account",
+    },
     classroom: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Classroom",
@@ -16,10 +20,12 @@ const schoolAdministrationStaffSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Schedule",
     },
-    klass: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Class",
-    },
+    klass: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Class",
+      },
+    ],
   },
   { timestamps: true }
 );

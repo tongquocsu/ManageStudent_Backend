@@ -29,5 +29,5 @@ const studentRecordsSchema = new Schema(
   },
   { timestamps: true }
 );
-const StudentRecords = mongoose.model("StudentRecords", studentRecordsSchema);
-export default StudentRecords;
+const StudentRecords = mongoose.model('StudentRecords', studentRecordsSchema);
+export default StudentRecords

@@ -138,10 +138,20 @@ export const updateAccountantController = async (req, res) => {
 
     const accountant = await accountantModel.findById(accountantId);
 
+    const currentEmail = accountant.account.email;
+    const currentUsername = accountant.account.username;
     const { name, username, email, password } = req.body;
 
     //Kiểm tra tính duy nhất của username, email. Kiểm tra cú pháp của email, username, password
-    const validation = await validateInputs(username, email, password);
+    const validation = await validateInputs(
+      username,
+      email,
+      password,
+      currentEmail,
+      currentUsername,
+      accountant.account._id
+    );
+
     if (!validation.success) {
       return res.status(400).send({
         success: false,

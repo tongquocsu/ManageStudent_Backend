@@ -13,15 +13,10 @@ const router = express.Router();
 
 //routing
 //Account
-router.post("/create", createTeacherAccountController);
-router.get("/list", getAllTeachersController);
-router.delete("/delete/:tid", deleteTeacherController);
-router.put("/update/:tid", updateTeacherController);
-router.get("/detail/:tid", getTeacherInfoController);
-// router.post("/school-create", requireSignIn, isAdmin, createSchool);
-// router.put("/school-update/:sid", requireSignIn, isAdmin, updateSchool);
-// router.delete("/school-delete/:sid", requireSignIn, isAdmin, deleteSchool);
-// router.get("/school-list", requireSignIn, isAdmin, listSchoolsController);
-// router.get("/school-detail/:sid", requireSignIn, isAdmin, getSchoolController);
+router.post("/create", requireSignIn, isAdmin, createTeacherAccountController);
+router.get("/list", requireSignIn, isAdmin, getAllTeachersController);
+router.delete("/delete/:tid", requireSignIn, isAdmin, deleteTeacherController);
+router.put("/update/:tid", requireSignIn, isAdmin, updateTeacherController);
+router.get("/detail/:tid", requireSignIn, isAdmin, getTeacherInfoController);
 
 export default router;

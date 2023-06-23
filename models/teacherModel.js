@@ -9,13 +9,9 @@ const teacherSchema = new Schema(
       ref: "Person",
       required: true,
     },
-    dateOfBirth: {
-      type: Date,
-      required: true,
-    },
-    gender: {
-      type: Boolean,
-      required: true,
+    academicResults: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AcademicResult",
     },
   },
   { timestamps: true }

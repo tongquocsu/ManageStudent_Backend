@@ -11,11 +11,14 @@ export const createParentController = async (req, res) => {
       name,
       mobileNumber,
       image,
+      dateOfBirth,
+      gender,
       school,
       address,
       username,
       email,
       password,
+      studentId,
     } = req.body;
 
     //Kiểm tra tính duy nhất của username, email. Kiểm tra cú pháp của email, username, password
@@ -42,6 +45,8 @@ export const createParentController = async (req, res) => {
     const person = new personModel({
       name,
       mobileNumber,
+      dateOfBirth,
+      gender,
       image,
       school,
       address,
@@ -51,6 +56,7 @@ export const createParentController = async (req, res) => {
     // Tạo một học sinh mới
     const parent = new parentsModel({
       person: person._id,
+      studentId,
     });
 
     // Mở một session để bắt đầu giao dịch trong MongoDB
@@ -151,12 +157,16 @@ export const updateParentController = async (req, res) => {
 
     const parent = await parentsModel.findById(parentId);
     const person = await personModel.findById(parent.person);
+    const currentEmail = person.account.email;
+    const currentUsername = person.account.username;
 
     const {
       username,
       email,
       password,
       name,
+      dateOfBirth,
+      gender,
       mobileNumber,
       image,
       address,
@@ -164,7 +174,15 @@ export const updateParentController = async (req, res) => {
     } = req.body;
 
     //Kiểm tra tính duy nhất của username, email. Kiểm tra cú pháp của email, username, password
-    const validation = await validateInputs(username, email, password);
+    const validation = await validateInputs(
+      username,
+      email,
+      password,
+      currentEmail,
+      currentUsername,
+      person.account._id
+    );
+
     if (!validation.success) {
       return res.status(400).send({
         success: false,
@@ -195,6 +213,8 @@ export const updateParentController = async (req, res) => {
       $set: {
         name,
         mobileNumber,
+        dateOfBirth,
+        gender,
         image,
         address,
       },

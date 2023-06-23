@@ -9,14 +9,6 @@ const studentSchema = new Schema(
       ref: "Person",
       required: true,
     },
-    dateOfBirth: {
-      type: Date,
-      required: true,
-    },
-    gender: {
-      type: Boolean,
-      required: true,
-    },
     klass: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Class",

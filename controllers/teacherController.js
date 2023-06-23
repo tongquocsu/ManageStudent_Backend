@@ -44,6 +44,8 @@ export const createTeacherAccountController = async (req, res) => {
     const person = new personModel({
       name,
       mobileNumber,
+      dateOfBirth,
+      gender,
       image,
       school,
       address,
@@ -53,8 +55,6 @@ export const createTeacherAccountController = async (req, res) => {
     // Tạo một giáo viên mới
     const teacher = new teacherModel({
       person: person._id,
-      dateOfBirth,
-      gender,
     });
 
     // Mở một session để bắt đầu giao dịch trong MongoDB
@@ -157,6 +157,8 @@ export const updateTeacherController = async (req, res) => {
 
     const teacher = await teacherModel.findById(teacherId);
     const person = await personModel.findById(teacher.person);
+    const currentEmail = person.account.email;
+    const currentUsername = person.account.username;
 
     const {
       username,
@@ -170,7 +172,15 @@ export const updateTeacherController = async (req, res) => {
     } = req.body;
 
     //Kiểm tra tính duy nhất của username, email. Kiểm tra cú pháp của email, username, password
-    const validation = await validateInputs(username, email, password);
+    const validation = await validateInputs(
+      username,
+      email,
+      password,
+      currentEmail,
+      currentUsername,
+      person.account._id
+    );
+
     if (!validation.success) {
       return res.status(400).send({
         success: false,
@@ -189,19 +199,13 @@ export const updateTeacherController = async (req, res) => {
       });
     }
 
-    // Cập nhật thông tin giáo viên
-    await teacherModel.findByIdAndUpdate(teacherId, {
-      $set: {
-        dateOfBirth,
-        gender,
-      },
-    });
-
     // Cập nhật thông tin người (person)
     await personModel.findByIdAndUpdate(teacher.person, {
       $set: {
         name,
         mobileNumber,
+        dateOfBirth,
+        gender,
         image,
       },
     });

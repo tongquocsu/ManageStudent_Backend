@@ -27,7 +27,7 @@ const accountSchema = new Schema(
         "parent",
         "admin",
         "accountant",
-        "schoolAdmin",
+        "schoolStaff",
       ],
     },
   },

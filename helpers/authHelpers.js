@@ -15,7 +15,14 @@ export const comparePassword = async (password, hashedPassword) => {
   return bcrypt.compare(password, hashedPassword);
 };
 
-export const validateInputs = async (username, email, password) => {
+export const validateInputs = async (
+  username,
+  email,
+  password,
+  currentEmail,
+  currentUsername,
+  currentAccountId
+) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const usernameRegex = /^[a-z0-9]+$/;
   const passwordRegex =
@@ -28,12 +35,20 @@ export const validateInputs = async (username, email, password) => {
     };
   }
 
-  const existUser = await accountModel.findOne({ email });
-  if (existUser) {
-    return {
-      success: false,
-      message: "Email has been taken",
-    };
+  //Kiểm tra email trùng lập bỏ qua email hiện tại
+  if (email === currentEmail) {
+    // Bỏ qua kiểm tra nếu email không thay đổi
+  } else {
+    const existUser = await accountModel.findOne({
+      email,
+      _id: { $ne: currentAccountId },
+    });
+    if (existUser) {
+      return {
+        success: false,
+        message: "Email has been taken",
+      };
+    }
   }
 
   if (!usernameRegex.test(username)) {
@@ -43,12 +58,20 @@ export const validateInputs = async (username, email, password) => {
     };
   }
 
-  const existUserName = await accountModel.findOne({ username });
-  if (existUserName) {
-    return {
-      success: false,
-      message: "Username has been taken",
-    };
+  //Kiểm tra username trùng lập bỏ qua username hiện tại
+  if (username === currentUsername) {
+    // Bỏ qua kiểm tra nếu username không thay đổi
+  } else {
+    const existUserName = await accountModel.findOne({
+      username,
+      _id: { $ne: currentAccountId },
+    });
+    if (existUserName) {
+      return {
+        success: false,
+        message: "Username has been taken",
+      };
+    }
   }
 
   if (!passwordRegex.test(password)) {

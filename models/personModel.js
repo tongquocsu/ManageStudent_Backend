@@ -8,6 +8,14 @@ const personSchema = new Schema(
       type: String,
       required: true,
     },
+    dateOfBirth: {
+      type: Date,
+      required: true,
+    },
+    gender: {
+      type: Boolean,
+      required: true,
+    },
     mobileNumber: {
       type: String,
       required: true,
@@ -30,7 +38,7 @@ const personSchema = new Schema(
       required: true,
     },
   },
-  { timestamps: true, collection: "person" }
+  { timestamps: true }
 );
 
 export default mongoose.model("Person", personSchema);
