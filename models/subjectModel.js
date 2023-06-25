@@ -1,14 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
 const subjectSchema = new Schema(
     {
-    subjectID: {
-        type: Number,
-        required: true,
-        unique: true
-    },
     name: {
         type: String,
         required: true
@@ -21,6 +16,4 @@ const subjectSchema = new Schema(
     },
     { timestamps: true}
 );
-
 export default mongoose.model('Subject', subjectSchema);
-

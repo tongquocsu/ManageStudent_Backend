@@ -1,38 +1,45 @@
 import mongoose from "mongoose";
-import schoolModel from "./schoolModel.js";
-import teacherModel from "./teacherModel.js";
+
 const { Schema } = mongoose;
 
-const classSchema = new Schema(
+const personSchema = new Schema(
   {
     name: {
       type: String,
       required: true,
     },
-    gradeLevel: {
-      type: String,
-      required: true,
-    },
-    classYear: {
+    dateOfBirth: {
       type: Date,
       required: true,
     },
-    classEnrollment: {
+    gender: {
+      type: Boolean,
+      required: true,
+    },
+    mobileNumber: {
       type: String,
       required: true,
     },
+
+    image: {
+      type: String,
+    },
     school: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: schoolModel,
+      ref: "School",
       required: true,
     },
-    teacherID: {
+    address: {
+      type: String,
+      required: true,
+    },
+    account: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: teacherModel,
+      ref: "Account",
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, collection: "person" }
 );
 
-export default mongoose.model("Classes", classSchema);
+export default mongoose.model("Person", personSchema);

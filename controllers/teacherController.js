@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 import { hashPassword } from "../helpers/authHelpers.js";
 import accountModel from "../models/accountModel.js";
 import personModel from "../models/personModel.js";
-import studentModel from "../models/studentModel.js";
+import teacherModel from "../models/teacherModel.js";
 
-export const createStudentAccount = async (req, res) => {
+export const createTeacherAccount = async (req, res) => {
   try {
     const {
       name,
@@ -17,7 +17,6 @@ export const createStudentAccount = async (req, res) => {
       password,
       dateOfBirth,
       gender,
-      klass,
     } = req.body;
 
     const existUser = await accountModel.findOne({ email, username });
@@ -36,7 +35,7 @@ export const createStudentAccount = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role: "student",
+      role: "teacher",
     });
 
     const person = new personModel({
@@ -50,9 +49,8 @@ export const createStudentAccount = async (req, res) => {
       gender,
     });
 
-    const student = new studentModel({
+    const teacher = new teacherModel({
       person: person._id,
-      klass,
     });
 
     // Mở một session để bắt đầu giao dịch trong MongoDB
@@ -63,7 +61,7 @@ export const createStudentAccount = async (req, res) => {
       // Lưu tài khoản, người và học sinh trong một giao dịch
       await account.save({ session });
       await person.save({ session });
-      await student.save({ session });
+      await teacher.save({ session });
 
       // Commit giao dịch nếu không có lỗi
       await session.commitTransaction();
@@ -71,8 +69,8 @@ export const createStudentAccount = async (req, res) => {
 
       res.status(201).send({
         success: true,
-        message: "Student account created successfully",
-        student,
+        message: "Teacher account created successfully",
+        teacher,
         person,
         account,
       });
@@ -93,7 +91,7 @@ export const createStudentAccount = async (req, res) => {
   }
 };
 
-export const updateProfileStudent = async (req, res) => {
+export const updateProfileTeacher = async (req, res) => {
   try {
     const {
       name,
@@ -103,29 +101,25 @@ export const updateProfileStudent = async (req, res) => {
       address,
       dateOfBirth,
       gender,
-      klass,
       username,
       email,
     } = req.body;
 
-    // Kiểm tra học sinh có tồn tại hay không
-    const student = await studentModel.findById(req.params.sid);
+    const teacher = await teacherModel.findById(req.params.tid);
 
-    if (!student) {
+    if (!teacher) {
       return res.status(404).send({
         success: false,
-        message: "Student not found",
+        message: "Teacher not found",
       });
     }
 
     // Cập nhật thông tin học sinh
-    await studentModel.findByIdAndUpdate(req.params.sid, {
-      $set: {
-        klass,
-      },
+    await teacherModel.findByIdAndUpdate(req.params.tid, {
+      $set: {},
     });
 
-    const person = await personModel.findById(student.person);
+    const person = await personModel.findById(teacher.person);
 
     await personModel.findByIdAndUpdate(person, {
       $set: {
@@ -148,7 +142,7 @@ export const updateProfileStudent = async (req, res) => {
       },
     });
 
-    const updatedStudent = await studentModel
+    const updatedTeacher = await teacherModel
       .findById(req.params.sid)
       .populate({
         path: "person",
@@ -157,8 +151,8 @@ export const updateProfileStudent = async (req, res) => {
 
     res.status(200).send({
       success: true,
-      message: "Student information updated successfully",
-      student: updatedStudent,
+      message: "Teacher information updated successfully",
+      teacher: updatedTeacher,
     });
   } catch (error) {
     console.log(error);
@@ -170,13 +164,13 @@ export const updateProfileStudent = async (req, res) => {
   }
 };
 
-export const getInfoStudent = async (req, res) => {
+export const getInfoTeacher = async (req, res) => {
   try {
     const accountId = req.account._id;
 
     const person = await personModel.findOne({ account: accountId });
 
-    const student = await studentModel
+    const teacher = await teacherModel
       .findOne({ person: person._id })
       .populate({
         path: "person",
@@ -186,83 +180,26 @@ export const getInfoStudent = async (req, res) => {
           select: "username email",
         },
       })
-      .populate("klass", "name gradeLevel classEnrollment")
       .select("klass person");
 
-    if (!student) {
+    if (!teacher) {
       return res.status(400).send({
         success: false,
-        message: "Student not found",
+        message: "Teacher not found",
       });
     }
 
     return res.status(200).send({
       success: true,
       message: "OK",
-      student,
+      teacher,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "error in getInfoStudent func",
+      message: "error in getInfoTeacher func",
       error,
-    });
-  }
-};
-
-export const getAllStudentsController = async (req, res) => {
-  try {
-    const students = await studentModel
-      .find()
-      .populate({
-        path: "person",
-        select: "name mobileNumber address account gender",
-        populate: {
-          path: "account",
-          select: "username email",
-        },
-      })
-      .populate("klass", "name gradeLevel classEnrollment")
-      .select("klass person");
-
-    res.status(200).send({
-      success: true,
-      message: "Get students list",
-      students,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      success: false,
-      error,
-      message: "Error retrieving students",
-    });
-  }
-};
-
-export const getAllStudentsByClass = async (req, res) => {
-  const classId = req.params.cid;
-  try {
-    const students = await studentModel
-      .find({ klass: classId })
-      .populate({
-        path: "person",
-        select: "name mobileNumber address gender",
-      })
-      .select("person");
-
-    res.status(200).send({
-      success: true,
-      message: "Get students list",
-      students,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      success: false,
-      error,
-      message: "Error retrieving students",
     });
   }
 };

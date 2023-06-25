@@ -87,3 +87,25 @@ export const isParent = async (req, res, next) => {
     });
   }
 };
+
+export const isTeacher = async (req, res, next) => {
+  try {
+    const user = await accountModel.findById(req.account.tid);
+
+    if (user.role !== "teacher") {
+      return res.status(401).send({
+        success: false,
+        message: "Not teacher",
+      });
+    } else {
+      next();
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(401).send({
+      success: false,
+      error,
+      message: "Error in teacher middleware",
+    });
+  }
+};

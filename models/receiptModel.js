@@ -1,14 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
 const receiptSchema = new Schema(
     {
-    receiptID: {
-        type: Number,
-        required: true,
-        unique: true
-    },
     paymentDate: {
         type: Date,
         required: true
@@ -30,5 +25,4 @@ const receiptSchema = new Schema(
     },
     { timestamps: true}
 );
-
 export default mongoose.model('Receipt', receiptSchema);

@@ -1,27 +1,32 @@
-const mongoose = require('mongoose');
-
+import mongoose from "mongoose";
+import classModel from "./classModel.js";
 const { Schema } = mongoose;
 
 const attendanceSchema = new Schema(
   {
-  date: {
-    type: Date,
-    required: true
+    classID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: classModel,
+      required: true,
+    },
+    date: {
+      type: Date,
+      required: true,
+    },
+    status: {
+      type: String,
+      required: true,
+    },
+    student: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Student",
+    },
+    teacher: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Teacher",
+    },
   },
-  status: {
-    type: String,
-    required: true
-  },
-  student: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Student'
-  },
-  teacher: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Teacher'
-  }
-  },
-  { timestamps: true}
+  { timestamps: true }
 );
 
-export default mongoose.model('Attendance', attendanceSchema);
+export default mongoose.model("Attendance", attendanceSchema);

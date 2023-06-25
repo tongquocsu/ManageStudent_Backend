@@ -1,14 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
 const tuitionFeeSchema = new Schema(
     {
-    tuitionFeeID: {
-        type: Number,
-        required: true,
-        unique: true
-    },
     semesterTuitionFee: {
         type: mongoose.Decimal128,
         required: true
@@ -34,5 +29,4 @@ const tuitionFeeSchema = new Schema(
     },
     { timestamps: true}
 );
-
 export default mongoose.model('TuitionFee', tuitionFeeSchema);

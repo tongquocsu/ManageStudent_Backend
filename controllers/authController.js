@@ -1,6 +1,7 @@
 import accountModel from "../models/accountModel.js";
 import { comparePassword, hashPassword } from "../helpers/authHelpers.js";
 import JWT from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 export const registerController = async (req, res) => {
   try {
@@ -61,14 +62,6 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // const user = await accountModel.findOne({ $or: [{ email }, { username }] });
-    // if (!user) {
-    //   return res.status(404).send({
-    //     success: false,
-    //     message: "Check your email",
-    //   });
-    // }
-
     let user;
     if (email) {
       user = await accountModel.findOne({ email });
@@ -78,7 +71,7 @@ export const loginController = async (req, res) => {
 
     const match = await comparePassword(password, user.password);
     if (!match) {
-      return res.status(200).send({
+      return res.status(400).send({
         success: false,
         message: "Invalid Password",
       });
@@ -107,4 +100,33 @@ export const loginController = async (req, res) => {
   }
 };
 
-//export default { registerController };
+export const changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  try {
+    const account = await accountModel.findOne({ _id: req.account._id });
+    if (!account) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Account not found" });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, account.password);
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid current password" });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    account.password = hashedNewPassword;
+    await account.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password changed successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, error, message: "Internal Server Error" });
+  }
+};
