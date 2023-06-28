@@ -1,9 +1,14 @@
 import express from "express";
 
-import { isAdmin, requireSignIn } from "../middlewares/authMiddlewares.js";
+import {
+  isAdmin,
+  isParent,
+  requireSignIn,
+} from "../middlewares/authMiddlewares.js";
 import {
   createParentController,
   deleteParentController,
+  getAcademicResultOfStudentController,
   getAllParentsController,
   getParentInfoController,
   updateParentController,
@@ -19,5 +24,12 @@ router.get("/list", requireSignIn, isAdmin, getAllParentsController);
 router.delete("/delete/:pid", requireSignIn, isAdmin, deleteParentController);
 router.put("/update/:pid", requireSignIn, isAdmin, updateParentController);
 router.get("/detail/:pid", requireSignIn, isAdmin, getParentInfoController);
+
+router.get(
+  "/student-results/:pid",
+  requireSignIn,
+  isParent,
+  getAcademicResultOfStudentController
+);
 
 export default router;

@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import parentsModel from "../models/parentsModel.js";
 import personModel from "../models/personModel.js";
 import accountModel from "../models/accountModel.js";
+import studentModel from "../models/studentModel.js";
+import academicResultsModel from "../models/academicResultsModel.js";
 import { hashPassword, validateInputs } from "../helpers/authHelpers.js";
 
 export const createParentController = async (req, res) => {
@@ -27,6 +29,15 @@ export const createParentController = async (req, res) => {
       return res.status(400).send({
         success: false,
         message: validation.message,
+      });
+    }
+
+    // Kiểm tra xem studentId có tồn tại hay không
+    const existingStudent = await studentModel.findById(studentId);
+    if (!existingStudent) {
+      return res.status(404).send({
+        success: false,
+        message: "Student not found",
       });
     }
 
@@ -167,6 +178,7 @@ export const updateParentController = async (req, res) => {
       name,
       dateOfBirth,
       gender,
+      studentId,
       mobileNumber,
       image,
       address,
@@ -205,6 +217,7 @@ export const updateParentController = async (req, res) => {
     await parentsModel.findByIdAndUpdate(parentId, {
       $set: {
         tuitionFee,
+        studentId,
       },
     });
 
@@ -273,6 +286,49 @@ export const getParentInfoController = async (req, res) => {
       success: false,
       error,
       message: "Error retrieving parent information",
+    });
+  }
+};
+
+export const getAcademicResultOfStudentController = async (req, res) => {
+  try {
+    const parentId = req.params.pid;
+
+    // Tìm thông tin của parents
+    const parents = await parentsModel.findById(parentId);
+    if (!parents) {
+      return res.status(404).send({
+        success: false,
+        message: "Parents not found",
+      });
+    }
+
+    // Tìm thông tin của học sinh mà parents quản lý
+    const studentId = parents.studentId;
+    const student = await studentModel.findById(studentId);
+    if (!student) {
+      return res.status(404).send({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    // Tìm danh sách academicResult của học sinh
+    const academicResults = await academicResultsModel
+      .find({ student: studentId })
+      .populate("teacher");
+
+    res.status(200).send({
+      success: true,
+      message: "Academic results retrieved successfully",
+      academicResults,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      error,
+      message: "Error retrieving academic results",
     });
   }
 };

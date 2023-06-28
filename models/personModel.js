@@ -38,7 +38,7 @@ const personSchema = new Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, collection: "person" }
 );
 
 export default mongoose.model("Person", personSchema);

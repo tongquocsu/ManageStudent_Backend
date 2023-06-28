@@ -7,8 +7,6 @@ import {
 import {
   isAccountant,
   isAdmin,
-  isParent,
-  isStudent,
   requireSignIn,
 } from "../middlewares/authMiddlewares.js";
 
