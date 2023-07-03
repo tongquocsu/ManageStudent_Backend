@@ -78,7 +78,7 @@ export const validateInputs = async (
     return {
       success: false,
       message:
-        "Confirm your password have 8 characters at least 1 upper case, 1 number inside",
+        "Confirm your password have 8 characters at least 1 upper case, 1 number, 1 symbol inside",
     };
   }
 
