@@ -85,7 +85,13 @@ export const deleteClassController = async (req, res) => {
 
 export const listClassesController = async (req, res) => {
   try {
-    const classes = await classModel.find();
+    const classes = await classModel
+      .find()
+      .populate({
+        path: "teacher",
+        populate: { path: "person" },
+      })
+      .populate("school");
     res.status(200).send({
       success: true,
       message: "List of classes",
