@@ -15,6 +15,4 @@ const accountantSchema = new Schema(
     },
     { timestamps: true}
 );
-
 export default mongoose.model('Accountant', accountantSchema);
-

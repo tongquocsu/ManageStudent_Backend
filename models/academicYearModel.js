@@ -4,7 +4,12 @@ const { Schema } = mongoose;
 
 const academicYearSchema = new Schema(
   {
-    year: {
+    startYear: {
+      type: Date,
+      required: true,
+      unique: true,
+    },
+    endYear: {
       type: Date,
       required: true,
       unique: true,

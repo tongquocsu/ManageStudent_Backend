@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
-
+import classModel from "./classModel.js";
 const { Schema } = mongoose;
 
 const attendanceSchema = new Schema(
   {
+    classID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: classModel,
+      required: true,
+    },
     date: {
       type: Date,
       required: true,

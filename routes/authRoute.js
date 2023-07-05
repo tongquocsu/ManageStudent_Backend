@@ -16,14 +16,9 @@ const router = express.Router();
 //routing
 //Account
 router.post("/account/login", loginController);
-router.get(
-  "/account/account-list",
-  requireSignIn,
-  isAdmin,
-  getAllAccountsController
-);
+router.get("/account/account-list", getAllAccountsController);
 
 //Test login role
-router.get("/account/test", requireSignIn, isAccountant, testController);
+router.get("/account/test", testController);
 
 export default router;

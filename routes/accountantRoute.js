@@ -14,20 +14,10 @@ const router = express.Router();
 
 //routing
 //Account
-router.post("/create", requireSignIn, isAdmin, createAccountantController);
-router.get("/list", requireSignIn, isAdmin, getAllAccountantsController);
-router.delete(
-  "/delete/:acid",
-  requireSignIn,
-  isAdmin,
-  deleteAccountantController
-);
-router.put("/update/:acid", requireSignIn, isAdmin, updateAccountantController);
-router.get(
-  "/detail/:acid",
-  requireSignIn,
-  isAdmin,
-  getAccountantInfoController
-);
+router.post("/create", createAccountantController);
+router.get("/list", getAllAccountantsController);
+router.delete("/delete/:acid", deleteAccountantController);
+router.put("/update/:acid", updateAccountantController);
+router.get("/detail/:acid", getAccountantInfoController);
 
 export default router;

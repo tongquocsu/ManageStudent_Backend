@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-
+import schoolModel from "./schoolModel.js";
+import teacherModel from "./teacherModel.js";
 const { Schema } = mongoose;
 
 const classSchema = new Schema(
@@ -22,12 +23,16 @@ const classSchema = new Schema(
     },
     school: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "School",
+      ref: schoolModel,
+      required: true,
+    },
+    teacher: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: teacherModel,
       required: true,
     },
   },
   { timestamps: true }
 );
 
-const Class = mongoose.model("Class", classSchema);
-export default Class
+export default mongoose.model("Classes", classSchema);

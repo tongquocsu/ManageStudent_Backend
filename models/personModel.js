@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import uploadImage from "../middlewares/uploadMiddleware.js";
 
 const { Schema } = mongoose;
 
@@ -40,5 +41,7 @@ const personSchema = new Schema(
   },
   { timestamps: true, collection: "person" }
 );
+
+personSchema.pre("create", uploadImage);
 
 export default mongoose.model("Person", personSchema);

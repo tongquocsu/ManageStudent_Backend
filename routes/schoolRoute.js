@@ -15,10 +15,10 @@ const router = express.Router();
 
 //routing
 //Account
-router.post("/school-create", requireSignIn, isAdmin, createSchool);
-router.put("/school-update/:sid", requireSignIn, isAdmin, updateSchool);
-router.delete("/school-delete/:sid", requireSignIn, isAdmin, deleteSchool);
-router.get("/school-list", requireSignIn, isAdmin, listSchoolsController);
-router.get("/school-detail/:sid", requireSignIn, isAdmin, getSchoolController);
+router.post("/school-create", createSchool);
+router.put("/school-update/:sid", updateSchool);
+router.delete("/school-delete/:sid", deleteSchool);
+router.get("/school-list", listSchoolsController);
+router.get("/school-detail/:sid", getSchoolController);
 
 export default router;

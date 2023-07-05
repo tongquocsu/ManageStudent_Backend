@@ -3,20 +3,15 @@ import studentModel from "../models/studentModel.js";
 import accountModel from "../models/accountModel.js";
 import personModel from "../models/personModel.js";
 import { hashPassword, validateInputs } from "../helpers/authHelpers.js";
+import { v2 as cloudinary } from "cloudinary";
+
+const { Schema } = mongoose;
 
 export const createStudentAccountController = async (req, res) => {
   try {
     // Lấy thông tin từ body request
-    const {
-      name,
-      mobileNumber,
-      image,
-      school,
-      address,
-      username,
-      email,
-      password,
-    } = req.body;
+    const { name, mobileNumber, school, address, username, email, password } =
+      req.body;
 
     //Kiểm tra tính duy nhất của username, email. Kiểm tra cú pháp của email, username, password
     const validation = await validateInputs(username, email, password);
@@ -44,7 +39,6 @@ export const createStudentAccountController = async (req, res) => {
       dateOfBirth: req.body.dateOfBirth,
       gender: req.body.gender,
       mobileNumber,
-      image,
       school,
       address,
       account: account._id,

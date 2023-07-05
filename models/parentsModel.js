@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
-
 const { Schema } = mongoose;
-
 const parentsSchema = new Schema(
   {
     person: {
@@ -12,10 +10,6 @@ const parentsSchema = new Schema(
     tuitionFee: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "TuitionFee",
-    },
-    studentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Student",
     },
   },
   { timestamps: true }

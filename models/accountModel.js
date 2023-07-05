@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const { Schema } = mongoose;
 
 const accountSchema = new Schema(
@@ -21,14 +20,7 @@ const accountSchema = new Schema(
     role: {
       type: String,
       default: "student",
-      enum: [
-        "student",
-        "teacher",
-        "parent",
-        "admin",
-        "accountant",
-        "schoolStaff",
-      ],
+      enum: ["student", "teacher", "parent", "admin", "accountant", "schoolAdmin"],
     },
   },
   { timestamps: true }

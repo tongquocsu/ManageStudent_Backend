@@ -19,17 +19,12 @@ const router = express.Router();
 
 //routing
 //Account
-router.post("/create", requireSignIn, isAdmin, createParentController);
-router.get("/list", requireSignIn, isAdmin, getAllParentsController);
-router.delete("/delete/:pid", requireSignIn, isAdmin, deleteParentController);
-router.put("/update/:pid", requireSignIn, isAdmin, updateParentController);
-router.get("/detail/:pid", requireSignIn, isAdmin, getParentInfoController);
+router.post("/create", createParentController);
+router.get("/list", getAllParentsController);
+router.delete("/delete/:pid", deleteParentController);
+router.put("/update/:pid", updateParentController);
+router.get("/detail/:pid", getParentInfoController);
 
-router.get(
-  "/student-results/:pid",
-  requireSignIn,
-  isParent,
-  getAcademicResultOfStudentController
-);
+router.get("/student-results/:pid", getAcademicResultOfStudentController);
 
 export default router;

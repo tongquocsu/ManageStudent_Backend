@@ -1,45 +1,49 @@
 import mongoose from "mongoose";
+import classroomModel from "./classroomModel.js";
+import classModel from "./classModel.js";
 
 const { Schema } = mongoose;
 
 const scheduleSchema = new Schema(
-    {
+  {
     semester: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     classPeriod: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     time: {
-        type: Date,
-        required: true,
-        default: Date.now,
+      type: Date,
+      required: true,
     },
-    classroomId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Classroom',
-        required: true
+    klass: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: classModel,
+      required: true,
     },
-    subjectId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Subject',
-        required: true
+    classroom: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: classroomModel,
+      required: true,
     },
-    teacherId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher',
-        required: true
+    subject: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subject",
+      required: true,
     },
-    academicYearId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'AcademicYear',
-        required: true
-    }
+    teacher: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Teacher",
+      required: true,
     },
-    { timestamps: true}
+    academicYear: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AcademicYear",
+      required: true,
+    },
+  },
+  { timestamps: true }
 );
-
-const Schedule = mongoose.model('Schedule', scheduleSchema);
-export default Schedule;
+export default mongoose.model("Schedule", scheduleSchema);

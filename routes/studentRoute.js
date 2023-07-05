@@ -18,11 +18,11 @@ const router = express.Router();
 
 //routing
 //Account
-router.post("/create", requireSignIn, isAdmin, createStudentAccountController);
-router.get("/list", requireSignIn, isAdmin, getAllStudentsController);
-router.delete("/delete/:sid", requireSignIn, isAdmin, deleteStudentController);
-router.put("/update/:sid", requireSignIn, isAdmin, updateStudentController);
-router.get("/detail/:sid", requireSignIn, isAdmin, getStudentInfoController);
+router.post("/create", createStudentAccountController);
+router.get("/list", getAllStudentsController);
+router.delete("/delete/:sid", deleteStudentController);
+router.put("/update/:sid", updateStudentController);
+router.get("/detail/:sid", getStudentInfoController);
 
 //test
 router.get("/account/test", requireSignIn, isStudent, testController);

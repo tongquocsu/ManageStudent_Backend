@@ -66,6 +66,7 @@ export const deleteSchool = async (req, res) => {
 export const listSchoolsController = async (req, res) => {
   try {
     const schools = await schoolModel.find();
+
     res.status(200).send({
       success: true,
       message: "List of schools",

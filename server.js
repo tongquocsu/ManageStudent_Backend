@@ -13,13 +13,16 @@ import adminRoutes from "./routes/adminRoute.js";
 import accountantRoutes from "./routes/accountantRoute.js";
 import teacherRoutes from "./routes/teacherRoute.js";
 import schoolStaffRoutes from "./routes/schoolAdministrationStaffRoute.js";
+import userAccountRoutes from "./routes/userAccountRoutes.js";
+import configureCloudinary from "./config/cloudinary.js";
+import cloudinary from "cloudinary";
 
 //configure env
 dotenv.config();
 
 //Database config
 connectDB();
-
+configureCloudinary();
 //Rest obj
 const app = express();
 
@@ -38,6 +41,7 @@ app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/accountant", accountantRoutes);
 app.use("/api/v1/teacher", teacherRoutes);
 app.use("/api/v1/school-staff", schoolStaffRoutes);
+app.use("/api/v1/user-account", userAccountRoutes);
 
 //rest api
 app.get("/", (req, res) => {
@@ -53,4 +57,12 @@ app.listen(PORT, () => {
     `Server Running on ${process.env.DEV_MODE} mode on port ${PORT}`.bgCyan
       .white
   );
+});
+
+cloudinary.v2.api.ping((error, result) => {
+  if (error) {
+    console.log(`Connect to cloudinary fail`.bgRed.white, error.message);
+  } else {
+    console.log(`Connect to cloudinary success`.bgGreen.white, result);
+  }
 });

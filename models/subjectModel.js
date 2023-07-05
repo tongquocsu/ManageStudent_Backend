@@ -16,6 +16,4 @@ const subjectSchema = new Schema(
     },
     { timestamps: true}
 );
-
 export default mongoose.model('Subject', subjectSchema);
-

@@ -1,6 +1,11 @@
 import express from "express";
 
-import { isAdmin } from "../middlewares/authMiddlewares.js";
+import {
+  isAdmin,
+  isNotStudent,
+  isStudent,
+  isTeacher,
+} from "../middlewares/authMiddlewares.js";
 import { requireSignIn } from "../middlewares/authMiddlewares.js";
 import {
   addClassController,
@@ -14,15 +19,10 @@ import {
 const router = express.Router();
 
 //routing
-router.post("/class-add", requireSignIn, isAdmin, addClassController);
-router.put("/class-update/:cid", requireSignIn, isAdmin, updateClassController);
-router.delete(
-  "/class-delete/:cid",
-  requireSignIn,
-  isAdmin,
-  deleteClassController
-);
-router.get("/class-list", requireSignIn, isAdmin, listClassesController);
-router.get("/class-detail/:cid", requireSignIn, isAdmin, getClassController);
+router.post("/class-add", addClassController);
+router.put("/class-update/:cid", updateClassController);
+router.delete("/class-delete/:cid", deleteClassController);
+router.get("/class-list", requireSignIn, isNotStudent, listClassesController);
+router.get("/class-detail/:cid", getClassController);
 
 export default router;
