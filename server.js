@@ -14,6 +14,7 @@ import accountantRoutes from "./routes/accountantRoute.js";
 import teacherRoutes from "./routes/teacherRoute.js";
 import schoolStaffRoutes from "./routes/schoolAdministrationStaffRoute.js";
 import userAccountRoutes from "./routes/userAccountRoutes.js";
+import personRoutes from "./routes/personRoute.js";
 import configureCloudinary from "./config/cloudinary.js";
 import cloudinary from "cloudinary";
 
@@ -42,6 +43,7 @@ app.use("/api/v1/accountant", accountantRoutes);
 app.use("/api/v1/teacher", teacherRoutes);
 app.use("/api/v1/school-staff", schoolStaffRoutes);
 app.use("/api/v1/user-account", userAccountRoutes);
+app.use("/api/v1/person", personRoutes);
 
 //rest api
 app.get("/", (req, res) => {
