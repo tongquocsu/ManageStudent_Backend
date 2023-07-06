@@ -27,7 +27,10 @@ export const addClassController = async (req, res) => {
 export const getClassController = async (req, res) => {
   try {
     const classId = req.params.cid;
-    const foundClass = await classModel.findById(classId);
+    const foundClass = await classModel
+      .findById(classId)
+      .populate("school")
+      .populate("teacher");
     res.status(200).json(foundClass);
   } catch (error) {
     console.error(error);

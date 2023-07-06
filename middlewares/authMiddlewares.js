@@ -147,3 +147,25 @@ export const isNotStudent = async (req, res, next) => {
     });
   }
 };
+
+export const isNotStudentNParent = async (req, res, next) => {
+  try {
+    const user = await accountModel.findById(req.account.accountId);
+
+    if (user.role !== "student" && "parent") {
+      next();
+    } else {
+      return res.status(401).send({
+        success: false,
+        message: "Don't have permission",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(401).send({
+      success: false,
+      error,
+      message: "Error in check role middleware",
+    });
+  }
+};

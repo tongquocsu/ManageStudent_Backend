@@ -20,10 +20,40 @@ const upload = multer({
   },
 });
 
-// Middleware upload ảnh
+// // Middleware upload ảnh
+// const uploadImage = (req, res, next) => {
+//   upload.single("image")(req, res, async (error) => {
+//     if (error) {
+//       res.status(400).send({
+//         success: false,
+//         message: error.message,
+//       });
+//     } else {
+//       try {
+//         // Upload ảnh lên Cloudinary
+//         const imageUploadResult = await cloudinary.uploader.upload(
+//           req.file.path
+//         );
+
+//         // Lưu đường dẫn ảnh vào trường "image" của req.body
+//         req.body.image = imageUploadResult.secure_url;
+
+//         next();
+//       } catch (error) {
+//         res.status(500).send({
+//           success: false,
+//           error,
+//           message: "Error uploading image",
+//         });
+//       }
+//     }
+//   });
+// };
+
 const uploadImage = (req, res, next) => {
   upload.single("image")(req, res, async (error) => {
     if (error) {
+      console.log("Error uploading image:", error.message);
       res.status(400).send({
         success: false,
         message: error.message,
@@ -35,11 +65,16 @@ const uploadImage = (req, res, next) => {
           req.file.path
         );
 
+        console.log("Image upload result:", imageUploadResult);
+
         // Lưu đường dẫn ảnh vào trường "image" của req.body
         req.body.image = imageUploadResult.secure_url;
 
+        console.log("Req body:", req.body);
+
         next();
       } catch (error) {
+        console.log("Error uploading image:", error);
         res.status(500).send({
           success: false,
           error,
